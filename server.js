@@ -24,11 +24,19 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+// Require handlebars
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 //use the Heroku monogo db connection if available; otherwise use local connection
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+
 
 // A GET route for scraping the NYT website
 app.get("/scrape", function (req, res) {
