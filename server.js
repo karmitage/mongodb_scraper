@@ -37,6 +37,23 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
+// render handlebars pages
+app.get("/", function (req, res) {
+    // Grab every document in the Articles collection
+    db.Article.find({ "saved": false })
+        .then(function (data) {
+            var hbsObject = {
+                article: data
+            };
+            console.log(hbsObject);
+            res.render("index", hbsObject);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
 
 // A GET route for scraping the NYT website
 app.get("/scrape", function (req, res) {
@@ -75,9 +92,6 @@ app.get("/scrape", function (req, res) {
                     console.log(err);
                 });
         });
-
-        // Send a message to the client
-        res.send("Scrape Complete");
     });
 
 
