@@ -90,6 +90,12 @@ app.get("/scrape", function (req, res) {
                 .then(function (dbArticle) {
                     // View the added result in the console
                     console.log(dbArticle);
+                    var hbsObject = {
+                        article: dbArticle
+                    };
+                    console.log(hbsObject);
+                    res.render("index", hbsObject);
+
                 })
                 .catch(function (err) {
                     // If an error occurred, log it

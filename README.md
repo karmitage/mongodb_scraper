@@ -15,4 +15,5 @@ This app uses MongoDB and Mongoose to scrape the NYT website. You can view scrap
 
 ## Challenges
 
-This application isn't yet in its finished state. I ran into some issues with heroku deployment, and I don't have the note functionality working yet.
+This application isn't yet in its finished state. I ran into some issues with heroku deployment that took a whie to solve, and as a result I don't have the note functionality working and the pages are not styled.
+
