@@ -9,7 +9,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 8080;
 
 // Initialize Express
 var app = express();
@@ -62,8 +62,10 @@ app.get("/scrape", function (req, res) {
     // get html body
     axios.get("https://www.newyorktimes.com").then(function (response) {
 
+        console.log("got response")
         // load into cheerio and save
         var $ = cheerio.load(response.data);
+        console.log("suggessfully loaded into cherrio mate")
 
         // Now, we grab every h2 within an article tag, and do the following:
         $("article").each(function (i, element) {
@@ -95,40 +97,42 @@ app.get("/scrape", function (req, res) {
                 });
         });
     });
-
-    //route to show saved articles
-
-
-    app.get("/saved", function (req, res) {
-        // Grab every document in the Articles collection
-        db.Article.find({ "saved": true }).populate("notes").exec(function (error, data) {
-            var hbsObject = {
-                article: data
-            };
-            console.log(hbsObject);
-            res.render("articles", hbsObject);
-        });
-    });
-
-
-    //update the articles "saved" boolean
-    app.post("/articles/save/:id", function (req, res) {
-        // Use the article id to find and update its saved boolean
-        db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
-            // Execute the above query
-            .exec(function (err, doc) {
-                // Log any errors
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    // Or send the document to the browser
-                    res.send(doc);
-                }
-            });
-    });
-
 });
+
+//route to show saved articles
+
+
+app.get("/saved", function (req, res) {
+    // Grab every document in the Articles collection
+    db.Article.find({ "saved": true }).populate("notes").exec(function (error, data) {
+        var hbsObject = {
+            article: data
+        };
+        console.log(hbsObject);
+        res.render("articles", hbsObject);
+    });
+});
+
+
+//update the articles "saved" boolean
+app.post("/articles/save/:id", function (req, res) {
+    // Use the article id to find and update its saved boolean
+    db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
+        // Execute the above query
+        .exec(function (err, doc) {
+            // Log any errors
+            if (err) {
+                console.log(err);
+            }
+            else {
+                // Or send the document to the browser
+                res.send(doc);
+            }
+        });
+});
+
+
+
 
 // Start the server
 app.listen(PORT, function () {
